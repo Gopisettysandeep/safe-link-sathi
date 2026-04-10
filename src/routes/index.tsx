@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Shield, Sparkles, Lock, Eye } from 'lucide-react';
+import { Sparkles, Lock, Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getSavedLanguage } from '@/lib/app-store';
+import shieldIcon from '@/assets/shield-icon.png';
 
 export const Route = createFileRoute('/')({
   component: WelcomeScreen,
@@ -35,11 +36,9 @@ function WelcomeScreen() {
     <div className="flex min-h-screen flex-col items-center justify-center px-6 gradient-primary">
       <div className="flex flex-col items-center gap-8 animate-slide-up">
         {/* Animated Shield Icon */}
-        <div className="relative">
+        <div className="relative animate-float">
           <div className="absolute inset-0 rounded-full bg-primary-foreground/20 animate-pulse-ring" />
-          <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-primary-foreground/20 backdrop-blur-sm">
-            <Shield className="h-14 w-14 text-primary-foreground animate-float" />
-          </div>
+          <img src={shieldIcon} alt="Fraud Shield" width={120} height={120} className="relative" />
         </div>
 
         {/* Title */}
