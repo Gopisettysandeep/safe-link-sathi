@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UrlCheckRouteImport } from './routes/url-check'
+import { Route as UploadRouteImport } from './routes/upload'
+import { Route as TipsRouteImport } from './routes/tips'
+import { Route as ScanRouteImport } from './routes/scan'
+import { Route as ResultRouteImport } from './routes/result'
+import { Route as LanguageRouteImport } from './routes/language'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const UrlCheckRoute = UrlCheckRouteImport.update({
+  id: '/url-check',
+  path: '/url-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UploadRoute = UploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TipsRoute = TipsRouteImport.update({
+  id: '/tips',
+  path: '/tips',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScanRoute = ScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultRoute = ResultRouteImport.update({
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LanguageRoute = LanguageRouteImport.update({
+  id: '/language',
+  path: '/language',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/language': typeof LanguageRoute
+  '/result': typeof ResultRoute
+  '/scan': typeof ScanRoute
+  '/tips': typeof TipsRoute
+  '/upload': typeof UploadRoute
+  '/url-check': typeof UrlCheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/language': typeof LanguageRoute
+  '/result': typeof ResultRoute
+  '/scan': typeof ScanRoute
+  '/tips': typeof TipsRoute
+  '/upload': typeof UploadRoute
+  '/url-check': typeof UrlCheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/language': typeof LanguageRoute
+  '/result': typeof ResultRoute
+  '/scan': typeof ScanRoute
+  '/tips': typeof TipsRoute
+  '/upload': typeof UploadRoute
+  '/url-check': typeof UrlCheckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/history'
+    | '/home'
+    | '/language'
+    | '/result'
+    | '/scan'
+    | '/tips'
+    | '/upload'
+    | '/url-check'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/history'
+    | '/home'
+    | '/language'
+    | '/result'
+    | '/scan'
+    | '/tips'
+    | '/upload'
+    | '/url-check'
+  id:
+    | '__root__'
+    | '/'
+    | '/history'
+    | '/home'
+    | '/language'
+    | '/result'
+    | '/scan'
+    | '/tips'
+    | '/upload'
+    | '/url-check'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRoute
+  HomeRoute: typeof HomeRoute
+  LanguageRoute: typeof LanguageRoute
+  ResultRoute: typeof ResultRoute
+  ScanRoute: typeof ScanRoute
+  TipsRoute: typeof TipsRoute
+  UploadRoute: typeof UploadRoute
+  UrlCheckRoute: typeof UrlCheckRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/url-check': {
+      id: '/url-check'
+      path: '/url-check'
+      fullPath: '/url-check'
+      preLoaderRoute: typeof UrlCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upload': {
+      id: '/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tips': {
+      id: '/tips'
+      path: '/tips'
+      fullPath: '/tips'
+      preLoaderRoute: typeof TipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scan': {
+      id: '/scan'
+      path: '/scan'
+      fullPath: '/scan'
+      preLoaderRoute: typeof ScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/result': {
+      id: '/result'
+      path: '/result'
+      fullPath: '/result'
+      preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/language': {
+      id: '/language'
+      path: '/language'
+      fullPath: '/language'
+      preLoaderRoute: typeof LanguageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoryRoute: HistoryRoute,
+  HomeRoute: HomeRoute,
+  LanguageRoute: LanguageRoute,
+  ResultRoute: ResultRoute,
+  ScanRoute: ScanRoute,
+  TipsRoute: TipsRoute,
+  UploadRoute: UploadRoute,
+  UrlCheckRoute: UrlCheckRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
