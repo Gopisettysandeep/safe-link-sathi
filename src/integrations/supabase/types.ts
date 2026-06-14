@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fraud_reports: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          reason: string | null
+          report_type: string
+          reporter_label: string | null
+          risk_score: number | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          report_type: string
+          reporter_label?: string | null
+          risk_score?: number | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          report_type?: string
+          reporter_label?: string | null
+          risk_score?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
