@@ -125,7 +125,7 @@ function ResultScreen() {
 
         {/* Reasons */}
         <div className="mt-6 w-full max-w-sm space-y-2">
-          {reasonsList.map((reason, i) => (
+          {reasonsList.map((reason: string, i: number) => (
             <div
               key={i}
               className="rounded-xl border border-border bg-card p-3 text-sm text-foreground"
