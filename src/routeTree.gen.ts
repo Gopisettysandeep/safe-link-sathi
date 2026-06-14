@@ -11,12 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UrlCheckRouteImport } from './routes/url-check'
 import { Route as UploadRouteImport } from './routes/upload'
+import { Route as TrustedRouteImport } from './routes/trusted'
 import { Route as TipsRouteImport } from './routes/tips'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as ResultRouteImport } from './routes/result'
+import { Route as PermissionsRouteImport } from './routes/permissions'
 import { Route as LanguageRouteImport } from './routes/language'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as IndexRouteImport } from './routes/index'
 
 const UrlCheckRoute = UrlCheckRouteImport.update({
@@ -29,9 +34,19 @@ const UploadRoute = UploadRouteImport.update({
   path: '/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrustedRoute = TrustedRouteImport.update({
+  id: '/trusted',
+  path: '/trusted',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TipsRoute = TipsRouteImport.update({
   id: '/tips',
   path: '/tips',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScanRoute = ScanRouteImport.update({
@@ -42,6 +57,11 @@ const ScanRoute = ScanRouteImport.update({
 const ResultRoute = ResultRouteImport.update({
   id: '/result',
   path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PermissionsRoute = PermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LanguageRoute = LanguageRouteImport.update({
@@ -59,6 +79,16 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,35 +97,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
+  '/trusted': typeof TrustedRoute
   '/upload': typeof UploadRoute
   '/url-check': typeof UrlCheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
+  '/trusted': typeof TrustedRoute
   '/upload': typeof UploadRoute
   '/url-check': typeof UrlCheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
+  '/trusted': typeof TrustedRoute
   '/upload': typeof UploadRoute
   '/url-check': typeof UrlCheckRoute
 }
@@ -103,46 +148,66 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/community'
+    | '/dashboard'
     | '/history'
     | '/home'
     | '/language'
+    | '/permissions'
     | '/result'
     | '/scan'
+    | '/settings'
     | '/tips'
+    | '/trusted'
     | '/upload'
     | '/url-check'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/community'
+    | '/dashboard'
     | '/history'
     | '/home'
     | '/language'
+    | '/permissions'
     | '/result'
     | '/scan'
+    | '/settings'
     | '/tips'
+    | '/trusted'
     | '/upload'
     | '/url-check'
   id:
     | '__root__'
     | '/'
+    | '/community'
+    | '/dashboard'
     | '/history'
     | '/home'
     | '/language'
+    | '/permissions'
     | '/result'
     | '/scan'
+    | '/settings'
     | '/tips'
+    | '/trusted'
     | '/upload'
     | '/url-check'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CommunityRoute: typeof CommunityRoute
+  DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
   HomeRoute: typeof HomeRoute
   LanguageRoute: typeof LanguageRoute
+  PermissionsRoute: typeof PermissionsRoute
   ResultRoute: typeof ResultRoute
   ScanRoute: typeof ScanRoute
+  SettingsRoute: typeof SettingsRoute
   TipsRoute: typeof TipsRoute
+  TrustedRoute: typeof TrustedRoute
   UploadRoute: typeof UploadRoute
   UrlCheckRoute: typeof UrlCheckRoute
 }
@@ -163,11 +228,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trusted': {
+      id: '/trusted'
+      path: '/trusted'
+      fullPath: '/trusted'
+      preLoaderRoute: typeof TrustedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tips': {
       id: '/tips'
       path: '/tips'
       fullPath: '/tips'
       preLoaderRoute: typeof TipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scan': {
@@ -182,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/result'
       fullPath: '/result'
       preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/permissions': {
+      id: '/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof PermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/language': {
@@ -205,6 +291,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -217,12 +317,17 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CommunityRoute: CommunityRoute,
+  DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
   HomeRoute: HomeRoute,
   LanguageRoute: LanguageRoute,
+  PermissionsRoute: PermissionsRoute,
   ResultRoute: ResultRoute,
   ScanRoute: ScanRoute,
+  SettingsRoute: SettingsRoute,
   TipsRoute: TipsRoute,
+  TrustedRoute: TrustedRoute,
   UploadRoute: UploadRoute,
   UrlCheckRoute: UrlCheckRoute,
 }
