@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
-import { ScanLine, Upload, Link2, History, ShieldCheck, Globe, Lightbulb, Settings, Users, AlertOctagon, Activity } from 'lucide-react';
+import { ScanLine, Upload, Link2, History, ShieldCheck, Globe, Lightbulb, Settings, Users, AlertOctagon, Activity, BookOpen, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { type Language, translations } from '@/lib/translations';
 import { getSavedLanguage, hasSeenPermissions, isProtectionOn, setProtectionOn } from '@/lib/app-store';
@@ -102,6 +102,8 @@ function HomeScreen() {
             { to: '/trusted' as const, icon: Users, label: 'Trusted' },
             { to: '/dashboard' as const, icon: Activity, label: 'Dashboard' },
             { to: '/community' as const, icon: AlertOctagon, label: 'Community' },
+            { to: '/education' as const, icon: BookOpen, label: 'Learn' },
+            { to: '/pair' as const, icon: Smartphone, label: 'Pair' },
             { to: '/tips' as const, icon: Lightbulb, label: t.safety_tips },
             { to: '/settings' as const, icon: Settings, label: 'Settings' },
           ].map(({ to, icon: Icon, label }) => (

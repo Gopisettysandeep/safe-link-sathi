@@ -17,9 +17,11 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as PermissionsRouteImport } from './routes/permissions'
+import { Route as PairRouteImport } from './routes/pair'
 import { Route as LanguageRouteImport } from './routes/language'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as EducationRouteImport } from './routes/education'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as IndexRouteImport } from './routes/index'
@@ -64,6 +66,11 @@ const PermissionsRoute = PermissionsRouteImport.update({
   path: '/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PairRoute = PairRouteImport.update({
+  id: '/pair',
+  path: '/pair',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LanguageRoute = LanguageRouteImport.update({
   id: '/language',
   path: '/language',
@@ -77,6 +84,11 @@ const HomeRoute = HomeRouteImport.update({
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationRoute = EducationRouteImport.update({
+  id: '/education',
+  path: '/education',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -99,9 +111,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
+  '/education': typeof EducationRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
@@ -115,9 +129,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
+  '/education': typeof EducationRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
@@ -132,9 +148,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
+  '/education': typeof EducationRoute
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/language': typeof LanguageRoute
+  '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
@@ -150,9 +168,11 @@ export interface FileRouteTypes {
     | '/'
     | '/community'
     | '/dashboard'
+    | '/education'
     | '/history'
     | '/home'
     | '/language'
+    | '/pair'
     | '/permissions'
     | '/result'
     | '/scan'
@@ -166,9 +186,11 @@ export interface FileRouteTypes {
     | '/'
     | '/community'
     | '/dashboard'
+    | '/education'
     | '/history'
     | '/home'
     | '/language'
+    | '/pair'
     | '/permissions'
     | '/result'
     | '/scan'
@@ -182,9 +204,11 @@ export interface FileRouteTypes {
     | '/'
     | '/community'
     | '/dashboard'
+    | '/education'
     | '/history'
     | '/home'
     | '/language'
+    | '/pair'
     | '/permissions'
     | '/result'
     | '/scan'
@@ -199,9 +223,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CommunityRoute: typeof CommunityRoute
   DashboardRoute: typeof DashboardRoute
+  EducationRoute: typeof EducationRoute
   HistoryRoute: typeof HistoryRoute
   HomeRoute: typeof HomeRoute
   LanguageRoute: typeof LanguageRoute
+  PairRoute: typeof PairRoute
   PermissionsRoute: typeof PermissionsRoute
   ResultRoute: typeof ResultRoute
   ScanRoute: typeof ScanRoute
@@ -270,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pair': {
+      id: '/pair'
+      path: '/pair'
+      fullPath: '/pair'
+      preLoaderRoute: typeof PairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/language': {
       id: '/language'
       path: '/language'
@@ -289,6 +322,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education': {
+      id: '/education'
+      path: '/education'
+      fullPath: '/education'
+      preLoaderRoute: typeof EducationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -319,9 +359,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CommunityRoute: CommunityRoute,
   DashboardRoute: DashboardRoute,
+  EducationRoute: EducationRoute,
   HistoryRoute: HistoryRoute,
   HomeRoute: HomeRoute,
   LanguageRoute: LanguageRoute,
+  PairRoute: PairRoute,
   PermissionsRoute: PermissionsRoute,
   ResultRoute: ResultRoute,
   ScanRoute: ScanRoute,
@@ -334,12 +376,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
