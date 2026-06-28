@@ -25,9 +25,17 @@ const TRUSTED_DOMAINS = [
 ];
 
 const BLACKLISTED_PATTERNS = [
-  /bit\.ly/i, /tinyurl\.com/i, /goo\.gl/i,
+  /bit\.ly/i, /tinyurl\.com/i, /goo\.gl/i, /t\.co\//i, /ow\.ly/i, /rb\.gy/i,
   /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/, // raw IP
   /@.*@/, // double @ signs
+  /xn--/i, // punycode (homoglyph attacks)
+  /(paytm|phonepe|gpay|sbi|hdfc|icici|axis|kotak)[-.][a-z]{2,}\.(xyz|top|click|info|gq|ml|cf|tk|buzz)/i,
+  /(verify|kyc|update|secure|refund|reward)-?(account|wallet|bank|upi)/i,
+];
+
+// Known fraud reports cached locally — extendable via community feed
+const KNOWN_FRAUD_DOMAINS = [
+  'sbi-verify.xyz', 'paytm-kyc.top', 'hdfc-secure.click', 'upi-reward.gq',
 ];
 
 export function analyzeUrl(url: string): FraudResult {
@@ -81,7 +89,16 @@ export function analyzeUrl(url: string): FraudResult {
       reasons.push('Excessive subdomains detected');
     }
 
-    // Check for trusted domain
+    if (KNOWN_FRAUD_DOMAINS.some(d => urlObj.hostname.includes(d))) {
+      score += 50;
+      reasons.push('Domain found in known fraud list');
+    }
+
+    if (/[0o]{2,}|rn|vv|1l|l1/i.test(urlObj.hostname) && !TRUSTED_DOMAINS.some(d => urlObj.hostname.endsWith(d))) {
+      score += 15;
+      reasons.push('Possible lookalike domain (homoglyph) detected');
+    }
+
     const isTrusted = TRUSTED_DOMAINS.some(d => urlObj.hostname.endsWith(d));
     if (isTrusted) {
       score = Math.max(0, score - 30);

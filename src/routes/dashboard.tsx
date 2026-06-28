@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { ArrowLeft, ShieldCheck, ShieldAlert, ShieldX, Activity, Database, Smartphone } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, ShieldAlert, ShieldX, Activity, Database, Smartphone, AlertOctagon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { getScanHistory, isProtectionOn, type ScanRecord } from '@/lib/app-store';
+import { supabase } from '@/integrations/supabase/client';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardScreen,
@@ -12,8 +13,15 @@ function DashboardScreen() {
   const navigate = useNavigate();
   const [history, setHistory] = useState<ScanRecord[]>([]);
   const [protection, setProtection] = useState(true);
+  const [communityCount, setCommunityCount] = useState<number | null>(null);
 
-  useEffect(() => { setHistory(getScanHistory()); setProtection(isProtectionOn()); }, []);
+  useEffect(() => {
+    setHistory(getScanHistory());
+    setProtection(isProtectionOn());
+    supabase.from('fraud_reports').select('id', { count: 'exact', head: true }).then(({ count }) => {
+      setCommunityCount(count ?? 0);
+    });
+  }, []);
 
   const stats = useMemo(() => {
     const safe = history.filter(h => h.status === 'safe').length;
@@ -74,6 +82,16 @@ function DashboardScreen() {
             </div>
           </div>
           <span className="text-xs font-semibold text-safe">OK</span>
+        </div>
+        <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center gap-3">
+            <AlertOctagon className="h-5 w-5 text-warning" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Community Reports</p>
+              <p className="text-xs text-muted-foreground">Crowdsourced fraud database</p>
+            </div>
+          </div>
+          <span className="text-xs font-semibold text-primary">{communityCount ?? '…'} TOTAL</span>
         </div>
       </div>
 
