@@ -105,19 +105,22 @@ export function classifyQr(content: string): QrClassification {
   return { category: lc.length > 0 ? 'text' : 'unknown', isTransaction: false, label: 'Plain Text QR', description: 'This QR contains plain text. Not a payment.' };
 }
 
-export function buildDeepLink(platform: UpiInfo['platform'], upi: UpiInfo): string {
+export type PayPlatform = 'gpay' | 'phonepe' | 'paytm' | 'bhim' | 'amazonpay' | 'other';
+
+export function buildDeepLink(platform: PayPlatform, upi: UpiInfo): string {
   const params = new URLSearchParams();
   if (upi.payeeAddress) params.set('pa', upi.payeeAddress);
   if (upi.payeeName) params.set('pn', upi.payeeName);
   if (upi.amount) params.set('am', upi.amount);
-  if (upi.currency) params.set('cu', upi.currency);
-  if (upi.note) params.set('tn', upi.note);
+  if (upi.currency ?? 'INR') params.set('cu', upi.currency ?? 'INR');
+  params.set('tn', upi.note ?? 'Verified via Fraud Shield');
   const qs = params.toString();
   switch (platform) {
     case 'gpay': return `tez://upi/pay?${qs}`;
     case 'phonepe': return `phonepe://pay?${qs}`;
     case 'paytm': return `paytmmp://pay?${qs}`;
     case 'bhim': return `upi://pay?${qs}`;
+    case 'amazonpay': return `amazonpay://pay?${qs}`;
     default: return `upi://pay?${qs}`;
   }
 }
