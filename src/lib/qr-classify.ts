@@ -10,6 +10,8 @@ export type QrCategory =
   | 'geo'
   | 'whatsapp'
   | 'social'
+  | 'youtube'
+  | 'email'
   | 'text'
   | 'unknown';
 
@@ -92,7 +94,13 @@ export function classifyQr(content: string): QrClassification {
   if (lc.includes('wa.me') || lc.includes('whatsapp.com')) {
     return { category: 'whatsapp', isTransaction: false, label: 'WhatsApp QR', description: 'This QR opens a WhatsApp chat. Not a payment.' };
   }
-  if (lc.includes('instagram.com') || lc.includes('facebook.com') || lc.includes('twitter.com') || lc.includes('youtube.com') || lc.includes('tiktok.com')) {
+  if (lc.startsWith('mailto:') || lc.startsWith('matmsg:')) {
+    return { category: 'email', isTransaction: false, label: 'Email QR', description: 'This QR opens an email draft. Not a payment.' };
+  }
+  if (lc.includes('youtube.com') || lc.includes('youtu.be')) {
+    return { category: 'youtube', isTransaction: false, label: 'YouTube QR', description: 'This QR opens a YouTube video. Not a payment.' };
+  }
+  if (lc.includes('instagram.com') || lc.includes('facebook.com') || lc.includes('twitter.com') || lc.includes('tiktok.com')) {
     return { category: 'social', isTransaction: false, label: 'Social Media QR', description: 'This QR opens a social media link. Not a payment.' };
   }
   if (lc.startsWith('http://') || lc.startsWith('https://')) {

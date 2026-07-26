@@ -5,6 +5,7 @@ import { type Language, translations } from '@/lib/translations';
 import { getSavedLanguage, addScanRecord } from '@/lib/app-store';
 import { VoiceButton } from '@/components/VoiceButton';
 import { analyzeQrContent } from '@/lib/fraud-detection';
+import { decodeQrFromFile, ACCEPTED_IMAGE_TYPES } from '@/lib/qr-decode';
 
 export const Route = createFileRoute('/upload')({
   component: UploadScreen,
@@ -35,32 +36,26 @@ function UploadScreen() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.type && !ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setError('Unsupported image format. Use PNG, JPG, JPEG, WEBP or GIF.');
+      return;
+    }
+
     setPreview(URL.createObjectURL(file));
     setProcessing(true);
     setError('');
 
     try {
-      // Try BarcodeDetector
-      if ('BarcodeDetector' in window) {
-        const detector = new (window as any).BarcodeDetector({ formats: ['qr_code'] });
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        await new Promise((res) => { img.onload = res; });
-
-        const barcodes = await detector.detect(img);
-        if (barcodes.length > 0) {
-          processResult(barcodes[0].rawValue);
-          return;
-        }
+      const content = await decodeQrFromFile(file);
+      if (content) {
+        processResult(content);
+        return;
       }
-
-      // Fallback — treat filename or prompt user
-      setError(t.invalid_qr);
-      setProcessing(false);
+      setError('No QR code could be read from this image. Try a clearer or larger photo.');
     } catch {
-      setError(t.invalid_qr);
-      setProcessing(false);
+      setError('No QR code could be read from this image. Try a clearer or larger photo.');
     }
+    setProcessing(false);
   };
 
   const processResult = (content: string) => {
@@ -107,7 +102,7 @@ function UploadScreen() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/png,image/jpeg,image/webp,image/gif"
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -141,7 +136,7 @@ function UploadScreen() {
               <ImagePlus className="h-10 w-10 text-primary" />
             </div>
             <span className="text-base font-medium text-foreground">{t.upload_image}</span>
-            <span className="text-xs text-muted-foreground">JPG, PNG, WebP</span>
+            <span className="text-xs text-muted-foreground">PNG, JPG, JPEG, WEBP, GIF</span>
           </button>
         )}
 
