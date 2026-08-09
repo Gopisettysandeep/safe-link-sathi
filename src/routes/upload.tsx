@@ -37,16 +37,22 @@ function UploadScreen() {
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
 
-    if (file.type && !ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setError('Unsupported image format. Use PNG, JPG, JPEG, WEBP or GIF.');
+    setError('');
+    setPreview(null);
+    setProcessing(true);
+
+    const check = await validateImageFile(file);
+    if (!check.ok) {
+      logSecurityEvent('upload_rejected', `Blocked upload: ${check.reason}`, 'warning');
+      setError(check.reason);
+      setProcessing(false);
       return;
     }
 
     setPreview(URL.createObjectURL(file));
-    setProcessing(true);
-    setError('');
 
     try {
       const content = await decodeQrFromFile(file);
@@ -54,12 +60,13 @@ function UploadScreen() {
         processResult(content);
         return;
       }
-      setError('No QR code could be read from this image. Try a clearer or larger photo.');
+      setError('Unable to read a QR code from this image. Please try a clearer or larger picture.');
     } catch {
-      setError('No QR code could be read from this image. Try a clearer or larger photo.');
+      setError('Unable to process this image. Please try another one.');
     }
     setProcessing(false);
   };
+
 
   const processResult = (content: string) => {
     const result = analyzeQrContent(content);
