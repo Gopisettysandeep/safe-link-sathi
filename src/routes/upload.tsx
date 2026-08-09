@@ -1,11 +1,14 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { ArrowLeft, Upload, ImagePlus, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ImagePlus, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { type Language, translations } from '@/lib/translations';
 import { getSavedLanguage, addScanRecord } from '@/lib/app-store';
 import { VoiceButton } from '@/components/VoiceButton';
 import { analyzeQrContent } from '@/lib/fraud-detection';
-import { decodeQrFromFile, ACCEPTED_IMAGE_TYPES } from '@/lib/qr-decode';
+import { decodeQrFromFile } from '@/lib/qr-decode';
+import { validateImageFile, MAX_FILE_BYTES } from '@/lib/file-security';
+import { logSecurityEvent } from '@/lib/security-log';
+
 
 export const Route = createFileRoute('/upload')({
   component: UploadScreen,

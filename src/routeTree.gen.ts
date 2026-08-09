@@ -17,6 +17,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as ResultRouteImport } from './routes/result'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PermissionsRouteImport } from './routes/permissions'
 import { Route as PairRouteImport } from './routes/pair'
 import { Route as LanguageRouteImport } from './routes/language'
@@ -65,6 +66,11 @@ const ScanRoute = ScanRouteImport.update({
 const ResultRoute = ResultRouteImport.update({
   id: '/result',
   path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PermissionsRoute = PermissionsRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/language': typeof LanguageRoute
   '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
+  '/privacy': typeof PrivacyRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
   '/security': typeof SecurityRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/language': typeof LanguageRoute
   '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
+  '/privacy': typeof PrivacyRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
   '/security': typeof SecurityRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/language': typeof LanguageRoute
   '/pair': typeof PairRoute
   '/permissions': typeof PermissionsRoute
+  '/privacy': typeof PrivacyRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
   '/security': typeof SecurityRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/language'
     | '/pair'
     | '/permissions'
+    | '/privacy'
     | '/result'
     | '/scan'
     | '/security'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/language'
     | '/pair'
     | '/permissions'
+    | '/privacy'
     | '/result'
     | '/scan'
     | '/security'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/language'
     | '/pair'
     | '/permissions'
+    | '/privacy'
     | '/result'
     | '/scan'
     | '/security'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   LanguageRoute: typeof LanguageRoute
   PairRoute: typeof PairRoute
   PermissionsRoute: typeof PermissionsRoute
+  PrivacyRoute: typeof PrivacyRoute
   ResultRoute: typeof ResultRoute
   ScanRoute: typeof ScanRoute
   SecurityRoute: typeof SecurityRoute
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/result'
       fullPath: '/result'
       preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/permissions': {
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   LanguageRoute: LanguageRoute,
   PairRoute: PairRoute,
   PermissionsRoute: PermissionsRoute,
+  PrivacyRoute: PrivacyRoute,
   ResultRoute: ResultRoute,
   ScanRoute: ScanRoute,
   SecurityRoute: SecurityRoute,
