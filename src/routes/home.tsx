@@ -32,6 +32,7 @@ function HomeScreen() {
   }, [navigate]);
 
   const t = translations[lang];
+  const x = extraTranslations[lang];
 
   const mainActions = [
     { icon: ScanLine, title: t.scan_qr, desc: t.scan_qr_desc, color: 'gradient-primary', to: '/scan' as const },
@@ -43,7 +44,9 @@ function HomeScreen() {
     const next = !protection;
     setProtectionOn(next);
     setProtection(next);
+    logSecurityEvent('protection_changed', `Protection turned ${next ? 'ON' : 'OFF'}`, next ? 'info' : 'warning');
   }
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background pb-8">
