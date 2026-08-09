@@ -94,75 +94,90 @@ function UploadScreen() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background px-5 py-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate({ to: '/home' })}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <span className="font-heading text-lg font-semibold text-foreground">{t.upload_qr}</span>
-        <VoiceButton text={t.upload_qr_desc} lang={lang} />
-      </div>
-
-      {/* Upload Area */}
-      <div className="mt-8 flex flex-1 flex-col items-center justify-center">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
-
-        {preview ? (
-          <div className="flex flex-col items-center gap-4">
-            <img
-              src={preview}
-              alt="QR Preview"
-              className="h-56 w-56 rounded-2xl object-contain border-2 border-border"
-            />
-            {processing && (
-              <div className="flex items-center gap-2 text-primary">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                <span className="text-sm">{t.analyzing}</span>
-              </div>
-            )}
-            {error && (
-              <div className="flex items-center gap-2 text-danger">
-                <AlertCircle className="h-5 w-5" />
-                <span className="text-sm">{error}</span>
-              </div>
-            )}
-          </div>
-        ) : (
+    <div className="min-h-screen bg-background px-5 py-6">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-2xl flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between">
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex h-64 w-full max-w-xs flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-primary/30 bg-primary/5 transition hover:border-primary/50 hover:bg-primary/10"
+            onClick={() => navigate({ to: '/home' })}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground"
           >
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-              <ImagePlus className="h-10 w-10 text-primary" />
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <span className="font-heading text-lg font-semibold text-foreground">{t.upload_qr}</span>
+          <VoiceButton text={t.upload_qr_desc} lang={lang} />
+        </div>
+
+        {/* Upload Area */}
+        <div className="mt-8 flex flex-1 flex-col items-center justify-center">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+
+          {preview || error ? (
+            <div className="flex flex-col items-center gap-4">
+              {preview && (
+                <img
+                  src={preview}
+                  alt="Uploaded QR code preview"
+                  className="h-56 w-56 rounded-2xl border-2 border-border object-contain"
+                />
+              )}
+              {processing && (
+                <div className="flex items-center gap-2 text-primary">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  <span className="text-sm">{t.analyzing}</span>
+                </div>
+              )}
+              {error && (
+                <div className="flex max-w-sm items-start gap-2 rounded-2xl border border-danger/40 bg-danger/10 p-3 text-danger">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                  <span className="text-sm">{error}</span>
+                </div>
+              )}
             </div>
-            <span className="text-base font-medium text-foreground">{t.upload_image}</span>
-            <span className="text-xs text-muted-foreground">PNG, JPG, JPEG, WEBP, GIF</span>
-          </button>
-        )}
+          ) : (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex h-64 w-full max-w-md flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-primary/30 bg-primary/5 transition hover:border-primary/50 hover:bg-primary/10"
+            >
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                <ImagePlus className="h-10 w-10 text-primary" />
+              </div>
+              <span className="text-base font-medium text-foreground">{t.upload_image}</span>
+              <span className="text-xs text-muted-foreground">
+                PNG, JPG, JPEG or WEBP · max {MAX_FILE_BYTES / (1024 * 1024)} MB
+              </span>
+            </button>
+          )}
 
-        {(preview && !processing) && (
-          <button
-            onClick={() => {
-              setPreview(null);
-              setError('');
-              fileInputRef.current?.click();
-            }}
-            className="mt-6 rounded-xl gradient-primary px-8 py-3 font-semibold text-primary-foreground transition active:scale-95"
-          >
-            Try Another Image
-          </button>
-        )}
+          {!processing && (preview || error) && (
+            <button
+              onClick={() => {
+                setPreview(null);
+                setError('');
+                fileInputRef.current?.click();
+              }}
+              className="mt-6 rounded-xl gradient-primary px-8 py-3 font-semibold text-primary-foreground transition active:scale-95"
+            >
+              Try Another Image
+            </button>
+          )}
+
+          <div className="mt-8 flex max-w-md items-start gap-2 rounded-2xl border border-border bg-card p-4">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-safe" />
+            <p className="text-xs text-muted-foreground">
+              Uploads are checked for file type, size and true file signature, then decoded locally on your device.
+              Archives, documents and executables are rejected and never opened.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
+
 }
