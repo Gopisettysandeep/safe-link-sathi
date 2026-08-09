@@ -70,7 +70,13 @@ function UploadScreen() {
 
   const processResult = (content: string) => {
     const result = analyzeQrContent(content);
-    
+
+    logSecurityEvent(
+      result.status === 'fraud' ? 'fraud_detected' : 'qr_scanned',
+      `Uploaded QR analysed — risk ${result.score}/100 (${result.status})`,
+      result.status === 'fraud' ? 'critical' : result.status === 'caution' ? 'warning' : 'info',
+    );
+
     addScanRecord({
       id: crypto.randomUUID(),
       type: 'qr',
@@ -80,6 +86,7 @@ function UploadScreen() {
       explanation: result.reasons.join('; '),
       timestamp: Date.now(),
     });
+
 
     navigate({
       to: '/result',
