@@ -14,6 +14,7 @@ import { Route as UploadRouteImport } from './routes/upload'
 import { Route as TrustedRouteImport } from './routes/trusted'
 import { Route as TipsRouteImport } from './routes/tips'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as PermissionsRouteImport } from './routes/permissions'
@@ -49,6 +50,11 @@ const TipsRoute = TipsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScanRoute = ScanRouteImport.update({
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
   '/trusted': typeof TrustedRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
   '/trusted': typeof TrustedRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/permissions': typeof PermissionsRoute
   '/result': typeof ResultRoute
   '/scan': typeof ScanRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tips': typeof TipsRoute
   '/trusted': typeof TrustedRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/result'
     | '/scan'
+    | '/security'
     | '/settings'
     | '/tips'
     | '/trusted'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/result'
     | '/scan'
+    | '/security'
     | '/settings'
     | '/tips'
     | '/trusted'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/result'
     | '/scan'
+    | '/security'
     | '/settings'
     | '/tips'
     | '/trusted'
@@ -231,6 +243,7 @@ export interface RootRouteChildren {
   PermissionsRoute: typeof PermissionsRoute
   ResultRoute: typeof ResultRoute
   ScanRoute: typeof ScanRoute
+  SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
   TipsRoute: typeof TipsRoute
   TrustedRoute: typeof TrustedRoute
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scan': {
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   PermissionsRoute: PermissionsRoute,
   ResultRoute: ResultRoute,
   ScanRoute: ScanRoute,
+  SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
   TipsRoute: TipsRoute,
   TrustedRoute: TrustedRoute,
@@ -376,12 +397,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
