@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
-import { ScanLine, Upload, Link2, History, ShieldCheck, Globe, Lightbulb, Settings, Users, AlertOctagon, Activity, BookOpen, Smartphone } from 'lucide-react';
+import { ScanLine, Upload, Link2, History, ShieldCheck, Globe, Lightbulb, Settings, Users, AlertOctagon, Activity, BookOpen, Smartphone, Lock, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { type Language, translations } from '@/lib/translations';
+import { extraTranslations } from '@/lib/translations-extra';
 import { getSavedLanguage, hasSeenPermissions, isProtectionOn, setProtectionOn } from '@/lib/app-store';
+import { logSecurityEvent } from '@/lib/security-log';
 import { VoiceButton } from '@/components/VoiceButton';
+
 
 export const Route = createFileRoute('/home')({
   component: HomeScreen,
