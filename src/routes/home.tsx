@@ -52,66 +52,73 @@ function HomeScreen() {
     <div className="flex min-h-screen flex-col bg-background pb-8">
       {/* Header */}
       <div className="gradient-primary px-5 pb-10 pt-6">
-        <div className="flex items-center justify-between">
-          <button onClick={() => navigate({ to: '/settings' })} className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
-            <Settings className="h-5 w-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-6 w-6 text-primary-foreground" />
-            <span className="font-heading text-lg font-bold text-primary-foreground">{t.welcome_title}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <button onClick={() => navigate({ to: '/language' })} className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
-              <Globe className="h-5 w-5" />
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+            <button onClick={() => navigate({ to: '/settings' })} aria-label={x.settings} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
+              <Settings className="h-5 w-5" />
             </button>
-            <VoiceButton text={t.voice_welcome} lang={lang} />
+            <div className="flex min-w-0 items-center justify-center gap-2">
+              <ShieldCheck className="h-6 w-6 shrink-0 text-primary-foreground" />
+              <span className="truncate font-heading text-lg font-bold text-primary-foreground">{t.welcome_title}</span>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <button onClick={() => navigate({ to: '/language' })} aria-label="Language" className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
+                <Globe className="h-5 w-5" />
+              </button>
+              <VoiceButton text={t.voice_welcome} lang={lang} />
+            </div>
           </div>
-        </div>
 
-        {/* Protection Toggle */}
-        <button
-          onClick={toggleProtection}
-          className={`mt-6 flex w-full items-center justify-between rounded-3xl border-2 p-4 transition ${protection ? 'border-safe/40 bg-safe/10' : 'border-danger/40 bg-danger/15'}`}
-        >
-          <div className="flex items-center gap-3">
-            <div className={`relative flex h-12 w-12 items-center justify-center rounded-full ${protection ? 'bg-safe' : 'bg-danger'}`}>
-              <ShieldCheck className="h-6 w-6 text-primary-foreground" />
-              {protection && <span className="absolute inset-0 rounded-full bg-safe/60 animate-ping" />}
+          {/* Protection Toggle */}
+          <button
+            onClick={toggleProtection}
+            aria-pressed={protection}
+            className={`mt-6 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-3xl border-2 p-4 transition ${protection ? 'border-safe/40 bg-safe/10' : 'border-danger/40 bg-danger/15'}`}
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <div className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${protection ? 'bg-safe' : 'bg-danger'}`}>
+                <ShieldCheck className="h-6 w-6 text-primary-foreground" />
+                {protection && <span className="absolute inset-0 animate-ping rounded-full bg-safe/60" />}
+              </div>
+              <div className="min-w-0 text-left">
+                <p className="truncate font-heading text-base font-bold text-primary-foreground">{protection ? x.protection_on : x.protection_off}</p>
+                <p className="text-xs text-primary-foreground/80">{protection ? x.protection_on_desc : x.protection_off_desc}</p>
+              </div>
             </div>
-            <div className="text-left">
-              <p className="font-heading text-base font-bold text-primary-foreground">{protection ? 'Protection ON' : 'Protection OFF'}</p>
-              <p className="text-xs text-primary-foreground/80">{protection ? 'Fraud Shield is actively monitoring' : 'Tap to enable protection'}</p>
-            </div>
-          </div>
-          <span className={`h-3 w-3 rounded-full ${protection ? 'bg-safe shadow-[0_0_12px_var(--safe)]' : 'bg-danger'}`} />
-        </button>
+            <span className={`h-3 w-3 shrink-0 rounded-full ${protection ? 'bg-safe shadow-[0_0_12px_var(--safe)]' : 'bg-danger'}`} />
+          </button>
+        </div>
       </div>
 
       {/* Main Actions */}
-      <div className="flex flex-col gap-3 px-5 -mt-4">
-        {mainActions.map(({ icon: Icon, title, desc, color, to }) => (
-          <button key={to} onClick={() => navigate({ to })} className="flex items-center gap-4 rounded-2xl bg-card p-5 shadow-md transition-all active:scale-[0.98] hover:shadow-lg border border-border">
-            <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${color}`}>
-              <Icon className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-heading text-base font-semibold text-foreground">{title}</h3>
-              <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>
-            </div>
-          </button>
-        ))}
+      <div className="-mt-4 mx-auto flex w-full max-w-3xl flex-col gap-3 px-5">
+        <div className="grid gap-3 md:grid-cols-3">
+          {mainActions.map(({ icon: Icon, title, desc, color, to }) => (
+            <button key={to} onClick={() => navigate({ to })} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-md transition-all hover:shadow-lg active:scale-[0.98]">
+              <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${color}`}>
+                <Icon className="h-7 w-7 text-primary-foreground" />
+              </div>
+              <div className="min-w-0 text-left">
+                <h3 className="font-heading text-base font-semibold text-foreground">{title}</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>
+              </div>
+            </button>
+          ))}
+        </div>
 
         {/* Secondary actions */}
-        <div className="mt-2 grid grid-cols-3 gap-2">
+        <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
           {[
             { to: '/history' as const, icon: History, label: t.history },
-            { to: '/trusted' as const, icon: Users, label: 'Trusted' },
-            { to: '/dashboard' as const, icon: Activity, label: 'Dashboard' },
-            { to: '/community' as const, icon: AlertOctagon, label: 'Community' },
-            { to: '/education' as const, icon: BookOpen, label: 'Learn' },
-            { to: '/pair' as const, icon: Smartphone, label: 'Pair' },
+            { to: '/trusted' as const, icon: Users, label: x.trusted },
+            { to: '/dashboard' as const, icon: Activity, label: x.dashboard },
+            { to: '/community' as const, icon: AlertOctagon, label: x.community },
+            { to: '/education' as const, icon: BookOpen, label: x.learn },
+            { to: '/pair' as const, icon: Smartphone, label: x.pair },
+            { to: '/security' as const, icon: Lock, label: x.security_center },
+            { to: '/privacy' as const, icon: EyeOff, label: x.privacy_center },
             { to: '/tips' as const, icon: Lightbulb, label: t.safety_tips },
-            { to: '/settings' as const, icon: Settings, label: 'Settings' },
+            { to: '/settings' as const, icon: Settings, label: x.settings },
           ].map(({ to, icon: Icon, label }) => (
             <Link key={to} to={to} className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-card p-3 text-center transition hover:shadow-md">
               <Icon className="h-5 w-5 text-primary" />
@@ -122,4 +129,5 @@ function HomeScreen() {
       </div>
     </div>
   );
+
 }
