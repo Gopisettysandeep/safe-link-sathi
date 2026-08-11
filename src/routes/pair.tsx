@@ -3,8 +3,10 @@ import { ArrowLeft, Smartphone, Monitor, Copy, Check, Camera } from 'lucide-reac
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { analyzeQrContent } from '@/lib/fraud-detection';
-import { addScanRecord } from '@/lib/app-store';
+import { addScanRecord, getSavedLanguage } from '@/lib/app-store';
 import { decodeFromVideo } from '@/lib/qr-decode';
+import type { Language } from '@/lib/translations';
+import { pairT } from '@/lib/i18n/education-pair';
 
 export const Route = createFileRoute('/pair')({
   component: PairScreen,
@@ -33,8 +35,15 @@ function PairScreen() {
   const [manualContent, setManualContent] = useState('');
   const [liveScan, setLiveScan] = useState(false);
   const [sent, setSent] = useState(false);
+  const [lang, setLang] = useState<Language>('en');
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    setLang(getSavedLanguage() ?? 'en');
+  }, []);
+
+  const t = pairT[lang];
 
   const isMobile =
     typeof navigator !== 'undefined' && (/Mobi|Android/i.test(navigator.userAgent) || !!incomingCode);
@@ -160,7 +169,7 @@ function PairScreen() {
           <ArrowLeft className="h-5 w-5" />
         </button>
         <h1 className="truncate font-heading text-lg font-semibold text-foreground">
-          Desktop ↔ Mobile Pairing
+          {t.header_title}
         </h1>
       </div>
 
@@ -170,7 +179,7 @@ function PairScreen() {
             <Monitor className="h-8 w-8 text-primary-foreground" />
           </div>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Open Fraud Shield on your phone, go to <b>Pair</b>, and enter this code:
+            {t.desktop_instructions}
           </p>
           <div className="mt-6 flex items-center gap-3 rounded-2xl border-2 border-primary/40 bg-primary/5 px-6 py-4">
             <span className="font-mono text-4xl font-bold tracking-widest text-foreground">{code}</span>
@@ -179,9 +188,9 @@ function PairScreen() {
             </button>
           </div>
           <div className="mt-6 rounded-full bg-muted px-4 py-2 text-xs font-semibold uppercase text-muted-foreground">
-            {status === 'waiting' && 'Waiting for phone…'}
-            {status === 'paired' && '📱 Phone connected'}
-            {status === 'received' && '✅ Scan received — analyzing'}
+            {status === 'waiting' && t.status_waiting}
+            {status === 'paired' && t.status_paired}
+            {status === 'received' && t.status_received}
           </div>
         </div>
       ) : (
@@ -190,14 +199,13 @@ function PairScreen() {
             <Smartphone className="h-8 w-8 text-primary-foreground" />
           </div>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Enter the 6-digit code shown on your desktop, then scan the payment QR with your phone camera
-            or paste its content.
+            {t.mobile_instructions}
           </p>
 
           <input
             value={manualCode}
             onChange={(e) => setManualCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            placeholder="123456"
+            placeholder={t.code_placeholder}
             inputMode="numeric"
             className="mt-6 w-full rounded-2xl border-2 border-border bg-card px-4 py-3 text-center font-mono text-2xl tracking-widest text-foreground"
           />
@@ -213,14 +221,14 @@ function PairScreen() {
               disabled={manualCode.length !== 6}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-primary/5 px-4 py-3 font-semibold text-primary disabled:opacity-50"
             >
-              <Camera className="h-5 w-5" /> Scan QR with phone camera
+              <Camera className="h-5 w-5" /> {t.scan_button}
             </button>
           )}
 
           <textarea
             value={manualContent}
             onChange={(e) => setManualContent(e.target.value)}
-            placeholder="Or paste QR content / transaction URL here…"
+            placeholder={t.paste_placeholder}
             rows={3}
             className="mt-3 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground"
           />
@@ -229,10 +237,10 @@ function PairScreen() {
             disabled={manualCode.length !== 6 || !manualContent}
             className="mt-4 w-full rounded-2xl gradient-primary px-4 py-3 font-semibold text-primary-foreground disabled:opacity-50"
           >
-            Send to Desktop
+            {t.send_button}
           </button>
           {sent && (
-            <p className="mt-3 text-sm font-medium text-success">✅ Sent to desktop for verification</p>
+            <p className="mt-3 text-sm font-medium text-success">{t.sent_message}</p>
           )}
         </div>
       )}
