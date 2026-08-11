@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ShieldCheck, ShieldAlert, ShieldX, Activity, Database, Smartphone, AlertOctagon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { getScanHistory, isProtectionOn, type ScanRecord } from '@/lib/app-store';
+import { getScanHistory, isProtectionOn, getSavedLanguage, type ScanRecord } from '@/lib/app-store';
 import { supabase } from '@/integrations/supabase/client';
+import type { Language } from '@/lib/translations';
+import { dashboardT } from '@/lib/i18n/dashboard-community';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardScreen,
@@ -14,14 +16,18 @@ function DashboardScreen() {
   const [history, setHistory] = useState<ScanRecord[]>([]);
   const [protection, setProtection] = useState(true);
   const [communityCount, setCommunityCount] = useState<number | null>(null);
+  const [lang, setLang] = useState<Language>('en');
 
   useEffect(() => {
     setHistory(getScanHistory());
     setProtection(isProtectionOn());
+    setLang(getSavedLanguage() ?? 'en');
     supabase.from('fraud_reports').select('id', { count: 'exact', head: true }).then(({ count }) => {
       setCommunityCount(count ?? 0);
     });
   }, []);
+
+  const t = dashboardT[lang];
 
   const stats = useMemo(() => {
     const safe = history.filter(h => h.status === 'safe').length;
@@ -41,25 +47,25 @@ function DashboardScreen() {
   return (
     <div className="flex min-h-screen flex-col bg-background px-5 py-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate({ to: '/home' })} className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+        <button onClick={() => navigate({ to: '/home' })} className="flex h-10 w-10 items-center justify-center rounded-full bg-muted" aria-label={t.security_dashboard}>
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="font-heading text-lg font-semibold text-foreground">Security Dashboard</h1>
+        <h1 className="font-heading text-lg font-semibold text-foreground">{t.security_dashboard}</h1>
       </div>
 
       <div className={`mt-6 flex items-center justify-between rounded-2xl p-5 ${protection ? 'gradient-safe' : 'gradient-danger'}`}>
         <div>
-          <p className="text-xs uppercase tracking-wide text-primary-foreground/70">Protection Status</p>
-          <p className="mt-1 font-heading text-xl font-bold text-primary-foreground">{protection ? 'ACTIVE' : 'DISABLED'}</p>
+          <p className="text-xs uppercase tracking-wide text-primary-foreground/70">{t.protection_status}</p>
+          <p className="mt-1 font-heading text-xl font-bold text-primary-foreground">{protection ? t.active : t.disabled}</p>
         </div>
         <ShieldCheck className="h-12 w-12 text-primary-foreground" />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <Stat icon={Activity} label="Total Scans" value={stats.total} color="text-primary" />
-        <Stat icon={ShieldCheck} label="Safe" value={stats.safe} color="text-safe" />
-        <Stat icon={ShieldAlert} label="Suspicious" value={stats.caution} color="text-warning" />
-        <Stat icon={ShieldX} label="Fraud Blocked" value={stats.fraud} color="text-danger" />
+        <Stat icon={Activity} label={t.total_scans} value={stats.total} color="text-primary" />
+        <Stat icon={ShieldCheck} label={t.safe} value={stats.safe} color="text-safe" />
+        <Stat icon={ShieldAlert} label={t.suspicious} value={stats.caution} color="text-warning" />
+        <Stat icon={ShieldX} label={t.fraud_blocked} value={stats.fraud} color="text-danger" />
       </div>
 
       <div className="mt-4 flex flex-col gap-3">
@@ -67,35 +73,35 @@ function DashboardScreen() {
           <div className="flex items-center gap-3">
             <Database className="h-5 w-5 text-primary" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Threat Database</p>
-              <p className="text-xs text-muted-foreground">Local heuristic rules</p>
+              <p className="text-sm font-semibold text-foreground">{t.threat_database}</p>
+              <p className="text-xs text-muted-foreground">{t.local_heuristic_rules}</p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-safe">UP TO DATE</span>
+          <span className="text-xs font-semibold text-safe">{t.up_to_date}</span>
         </div>
         <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
           <div className="flex items-center gap-3">
             <Smartphone className="h-5 w-5 text-primary" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Device</p>
-              <p className="text-xs text-muted-foreground">{navigator.userAgent.includes('Mobile') ? 'Mobile browser' : 'Desktop browser'}</p>
+              <p className="text-sm font-semibold text-foreground">{t.device}</p>
+              <p className="text-xs text-muted-foreground">{navigator.userAgent.includes('Mobile') ? t.mobile_browser : t.desktop_browser}</p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-safe">OK</span>
+          <span className="text-xs font-semibold text-safe">{t.ok}</span>
         </div>
         <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
           <div className="flex items-center gap-3">
             <AlertOctagon className="h-5 w-5 text-warning" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Community Reports</p>
-              <p className="text-xs text-muted-foreground">Crowdsourced fraud database</p>
+              <p className="text-sm font-semibold text-foreground">{t.community_reports}</p>
+              <p className="text-xs text-muted-foreground">{t.crowdsourced_fraud_database}</p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-primary">{communityCount ?? '…'} TOTAL</span>
+          <span className="text-xs font-semibold text-primary">{communityCount ?? '…'} {t.total}</span>
         </div>
       </div>
 
-      <h2 className="mt-6 font-heading text-base font-semibold text-foreground">Recent Activity</h2>
+      <h2 className="mt-6 font-heading text-base font-semibold text-foreground">{t.recent_activity}</h2>
       <div className="mt-2 flex flex-col gap-2">
         {history.slice(0, 5).map(h => (
           <div key={h.id} className="flex items-center justify-between rounded-xl border border-border bg-card p-3">
@@ -108,7 +114,7 @@ function DashboardScreen() {
             </span>
           </div>
         ))}
-        {history.length === 0 && <p className="text-center text-sm text-muted-foreground">No scans yet</p>}
+        {history.length === 0 && <p className="text-center text-sm text-muted-foreground">{t.no_scans_yet}</p>}
       </div>
     </div>
   );
