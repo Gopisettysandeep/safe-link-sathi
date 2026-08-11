@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ShieldCheck, Lock, Camera, FileUp, Radar, Clock, RefreshCw, Trash2, AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { isProtectionOn } from '@/lib/app-store';
+import { getSavedLanguage, isProtectionOn } from '@/lib/app-store';
+import { securityT } from '@/lib/i18n/privacy-security';
+import type { Language } from '@/lib/translations';
 import {
   getSecurityEvents, clearSecurityEvents, getLastSecurityCheck, markSecurityCheck,
   logSecurityEvent, type SecurityEvent,
@@ -32,6 +34,8 @@ function SecurityCenter() {
   const [events, setEvents] = useState<SecurityEvent[]>([]);
   const [lastCheck, setLastCheck] = useState<number | null>(null);
   const [checking, setChecking] = useState(false);
+  const [lang, setLang] = useState<Language>('en');
+  const s = securityT[lang];
 
   const runCheck = async () => {
     setChecking(true);
@@ -53,23 +57,24 @@ function SecurityCenter() {
   };
 
   useEffect(() => {
+    setLang(getSavedLanguage() ?? 'en');
     setLastCheck(getLastSecurityCheck());
     setEvents(getSecurityEvents());
     void runCheck();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const permLabel = (s: PermState) =>
-    s === 'granted' ? 'Allowed' : s === 'denied' ? 'Blocked' : s === 'prompt' ? 'Asked only when needed' : 'Not reported by browser';
+  const permLabel = (p: PermState) =>
+    p === 'granted' ? s.permAllowed : p === 'denied' ? s.permBlocked : p === 'prompt' ? s.permAsked : s.permNotReported;
 
   const items = [
-    { icon: ShieldCheck, title: 'Application Protection', value: protection ? 'Protected' : 'Turned off', ok: protection },
-    { icon: Lock, title: 'HTTPS Connection', value: https ? 'Secure' : 'Not secure', ok: https },
-    { icon: Camera, title: 'Camera Permission', value: permLabel(camera), ok: camera !== 'denied' },
-    { icon: Radar, title: 'Notifications', value: permLabel(notif), ok: true },
-    { icon: Lock, title: 'Secure Local Storage', value: 'Device-only, no credentials stored', ok: true },
-    { icon: FileUp, title: 'File Upload Protection', value: 'PNG/JPG/WEBP only, signature + size checks', ok: true },
-    { icon: Radar, title: 'Threat Protection', value: 'Local rule-based analysis active', ok: true },
+    { icon: ShieldCheck, title: s.protTitle, value: protection ? s.protProtected : s.protOff, ok: protection },
+    { icon: Lock, title: s.httpsTitle, value: https ? s.httpsSecure : s.httpsNotSecure, ok: https },
+    { icon: Camera, title: s.cameraTitle, value: permLabel(camera), ok: camera !== 'denied' },
+    { icon: Radar, title: s.notifTitle, value: permLabel(notif), ok: true },
+    { icon: Lock, title: s.storageTitle, value: s.storageValue, ok: true },
+    { icon: FileUp, title: s.uploadTitle, value: s.uploadValue, ok: true },
+    { icon: Radar, title: s.threatTitle, value: s.threatValue, ok: true },
   ];
 
   return (
@@ -79,16 +84,16 @@ function SecurityCenter() {
           <button onClick={() => navigate({ to: '/home' })} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h1 className="truncate font-heading text-lg font-semibold text-foreground">Security Center</h1>
+          <h1 className="truncate font-heading text-lg font-semibold text-foreground">{s.title}</h1>
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
           <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4 shrink-0" />
-            <span className="truncate">Last check: {lastCheck ? new Date(lastCheck).toLocaleString() : 'never'}</span>
+            <span className="truncate">{s.lastCheck.replace('{value}', lastCheck ? new Date(lastCheck).toLocaleString() : s.never)}</span>
           </div>
           <button onClick={runCheck} disabled={checking} className="flex shrink-0 items-center gap-2 rounded-xl gradient-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60">
-            <RefreshCw className={`h-4 w-4 ${checking ? 'animate-spin' : ''}`} /> Re-check
+            <RefreshCw className={`h-4 w-4 ${checking ? 'animate-spin' : ''}`} /> {s.recheck}
           </button>
         </div>
 
@@ -107,13 +112,13 @@ function SecurityCenter() {
         </div>
 
         <div className="mt-6 flex items-center justify-between">
-          <h2 className="font-heading text-base font-semibold text-foreground">Security Events</h2>
+          <h2 className="font-heading text-base font-semibold text-foreground">{s.eventsTitle}</h2>
           {events.length > 0 && (
             <button
               onClick={() => { clearSecurityEvents(); setEvents([]); logSecurityEvent('history_cleared', 'Security log cleared'); setEvents(getSecurityEvents()); }}
               className="flex items-center gap-1 text-xs text-danger"
             >
-              <Trash2 className="h-3.5 w-3.5" /> Clear
+              <Trash2 className="h-3.5 w-3.5" /> {s.clear}
             </button>
           )}
         </div>
@@ -121,7 +126,7 @@ function SecurityCenter() {
         <div className="mt-3 flex flex-col gap-2">
           {events.length === 0 && (
             <p className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
-              No security events recorded yet on this device.
+              {s.noEvents}
             </p>
           )}
           {events.map((e) => (
@@ -136,7 +141,7 @@ function SecurityCenter() {
         </div>
 
         <p className="mt-6 text-xs text-muted-foreground">
-          Fraud Shield reports risk based on the evidence it can see. No analysis can guarantee a payment is completely safe.
+          {s.footerNote}
         </p>
       </div>
     </div>
