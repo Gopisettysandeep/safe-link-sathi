@@ -386,13 +386,53 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
 - **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
-## Development
+## Run locally (GitHub + VS Code)
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requirements: **Node.js 20 or newer** (install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)) and npm.
 
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Then open **http://localhost:8080**.
+
+### Environment variables
+
+The repo already includes a `.env` file with the public backend keys. If it is
+missing after cloning (some setups strip it), copy the template:
+
+```sh
+cp .env.example .env
+```
+
+Only publishable/anon keys live here — no secrets.
+
+### Available scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server on port 8080 with hot reload |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build locally |
+| `npm run typecheck` | TypeScript check |
+| `npm run lint` | ESLint |
+
+### VS Code
+
+Open the folder in VS Code and accept the recommended extensions prompt
+(ESLint, Prettier, Tailwind IntelliSense). Workspace settings, the TypeScript
+SDK path, and a Chrome debug launch config are committed in `.vscode/`.
+
+### Notes for testing features
+
+- **Camera / live QR scan** needs a secure context. `http://localhost` counts as
+  secure, so scanning works locally. Opening the dev server from another device
+  via your LAN IP will block the camera unless you use HTTPS.
+- **Desktop ↔ mobile pairing** and **community reports** need internet access
+  (they use the hosted backend).
+- Scan history, trusted recipients, language, and settings are stored in the
+  browser's local storage, so they are per-browser.
+
